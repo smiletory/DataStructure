@@ -11,6 +11,7 @@ struct node {
     bool is_leaf;
 };
 
+
 struct node* b_tree = NULL;
 
 // 새로운 노드 생성 함수
@@ -30,6 +31,9 @@ void insert_node(int key, struct node* search, struct node* parent);
 
 // tree 출력 함수
 void print_tree(struct node* search);
+
+// scan 함수
+void scan(int a, int b);
 
 int main() {
     b_tree = create_node(true);
