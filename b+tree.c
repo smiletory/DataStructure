@@ -72,12 +72,12 @@ int main()
             //     break;
             case 'p':
                 print_tree(b_tree);
+                printf("\n");
                 break;
             case 's':
-                printf("a = ");
+                printf("scan\n");
                 scanf("%d", &a);
                 getchar();
-                printf("b = ");
                 scanf("%d", &b);
                 getchar();
 
@@ -249,7 +249,6 @@ void print_tree(struct node* search)
         for (int i = 0; i < search->n_keys; i++){
             printf("%d ", search->keys[i]);
         }
-        printf("\n");
         search = search->children[search->n_keys];
         
         if (search == NULL) break;
@@ -259,16 +258,32 @@ void print_tree(struct node* search)
 // scan 함수 -> 트리에서 a이상 b이하 범위 내에 있는 수 모두 출력
 void scan(int a, int b, struct node* search)
 {
-    for(int i = 0; i < search->n_keys; i++){
-        if ((search->keys[i] >= a) && (search->keys[i] <= b)){
-            printf("%d  ", search->keys[i]);
-        }
+    // 최하단 맨왼쪽 리프 노드로 이동(트리에서 가장 작은 수)
+    while (search->children[0] != NULL) {
+        search = search->children[0];
     }
 
-    for(int i = 0; i <= search->n_keys; i++){
-        if (search->children[i] != NULL){
-            scan(a, b, search->children[i]);
+    while (true){
+        if (search == NULL) break;
+        int n_keys = search->n_keys;
+
+        // 만약 탐색 노드의 마지막 원소가 a보다 작다면
+        // 모든 원소가 범위에 해당되지 않으므로 다음 노드로 이동
+        if (search->keys[n_keys-1] < a) {
+            search = search->children[n_keys];
+            continue;
         }
+
+        for (int i = 0; i < search->n_keys; i++){
+            if ((search->keys[i] >= a) && (search->keys[i] <= b)){
+                printf("%d  ", search->keys[i]);
+            }
+        }
+        
+        // 만약 탐색 노드의 마지막 원소가 b보다 크거나 같으면
+        // 다음 노드의 원소들은 범위에 해당되지 않으므로 scan 종료
+        if (search->keys[n_keys-1] >= b) break;
+        else search = search->children[n_keys];
     }
 }
 
