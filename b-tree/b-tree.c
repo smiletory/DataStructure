@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "bfs.h" // 트리 출력 시 쓸 bfs 코드
+// #include "bfs.h" // 트리 출력 시 쓸 bfs 코드
 
-#define order 3
+#define order 4
 
 // btree 노드 기본 구조
 struct node {
@@ -72,12 +72,12 @@ int main()
             //     break;
             case 'p':
                 print_tree(b_tree);
+                printf("\n");
                 break;
             case 's':
-                printf("a = ");
+                printf("scan\n");
                 scanf("%d", &a);
                 getchar();
-                printf("b = ");
                 scanf("%d", &b);
                 getchar();
 
@@ -219,7 +219,7 @@ void print_tree(struct node* search)
     for (int i = 0; i < search->n_keys; i++) {
         printf("%d  ", search->keys[i]);
     }
-    printf("\n");
+    //printf("\n");
 
     for (int i = 0; i <= search->n_keys; i++) {
         if (search->children[i] != NULL) {
@@ -231,15 +231,21 @@ void print_tree(struct node* search)
 // scan 함수 -> 트리에서 a이상 b이하 범위 내에 있는 수 모두 출력
 void scan(int a, int b, struct node* search)
 {
-    for (int i = 0; i < search->n_keys; i++) {
+    if (search == NULL) return;
+    int n_keys = search->n_keys;
+
+    // 만약 노드 마지막 원소가 b보다 작을 경우 오른쪽 자식 노드 scan 진행
+    if (search->keys[n_keys-1] < b) scan(a, b, search->children[n_keys]);
+
+    for (int i = 0; i < n_keys; i++) {
         if ((search->keys[i] >= a) && (search->keys[i] <= b)) {
             printf("%d  ", search->keys[i]);
         }
-    }
-    for (int i = 0; i <= search->n_keys; i++) {
-        if (search->children[i] != NULL) {
+        // 만약 해당 노드 원소가 a보다 클 경우 왼쪽 자식 노드 scan 진행
+        if (search->keys[i] > a){
             scan(a, b, search->children[i]);
         }
+    
     }
 }
 
