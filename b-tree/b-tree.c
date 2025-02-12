@@ -238,6 +238,7 @@ void scan(int a, int b, struct node* search)
     if (search->keys[n_keys-1] < b) scan(a, b, search->children[n_keys]);
 
     for (int i = 0; i < n_keys; i++) {
+        // 노드의 원소가 범위 내에 있으면 출력
         if ((search->keys[i] >= a) && (search->keys[i] <= b)) {
             printf("%d  ", search->keys[i]);
         }
