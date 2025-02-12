@@ -41,6 +41,13 @@ int main()
 {
     b_tree = create_node(true);
 
+    // 입력값 백만개
+    // int input = 0;
+    // for (int i = 0; i < 1000000; i++){
+    //     insert_node(input, b_tree, NULL);
+    //     input += 5;
+    // }
+
     while (1) {
         char command;
 
@@ -258,32 +265,93 @@ void print_tree(struct node* search)
 // scan 함수 -> 트리에서 a이상 b이하 범위 내에 있는 수 모두 출력
 void scan(int a, int b, struct node* search)
 {
-    // 최하단 맨왼쪽 리프 노드로 이동(트리에서 가장 작은 수)
-    while (search->children[0] != NULL) {
-        search = search->children[0];
-    }
-
-    while (true){
-        if (search == NULL) break;
+    // 루프 노드에서 시작해서 a에 근접하는 리프 노드로 이동 후 scan를 진행하는 경우
+    // 리프 노드에 다다를 때까지 계속해서 자식 노드로 이동
+    while(true){
         int n_keys = search->n_keys;
 
-        // 만약 탐색 노드의 마지막 원소가 a보다 작다면
-        // 모든 원소가 범위에 해당되지 않으므로 다음 노드로 이동
-        if (search->keys[n_keys-1] < a) {
-            search = search->children[n_keys];
-            continue;
-        }
+        // 리프 노드에 도달하면 리프노드 연결리스트를 돌면서 scan 진행
+        if (search->is_leaf) {
+            while (true){
+                // 리프노드 연결리스트의 끝에 도달한 경우 종료
+                if (search == NULL) return;
 
-        for (int i = 0; i < search->n_keys; i++){
-            if ((search->keys[i] >= a) && (search->keys[i] <= b)){
-                printf("%d  ", search->keys[i]);
+                n_keys = search->n_keys;
+
+                // 현재 탐색 노드의 마지막 원소가 a보다 작으면 바로 오른쪽 노드로 이동
+                if (search->keys[n_keys-1] < a) {
+                    search = search->children[n_keys];
+                    continue;
+                }
+                
+                // 범위 내에 있는 수 출력
+                for (int i = 0; i < search->n_keys; i++){
+                    if ((search->keys[i] >= a) && (search->keys[i] <= b)){
+                        printf("%d ", search->keys[i]);
+                    }
+                    // 만약 b보다 큰 원소 만나면 더이상 범위 내의 수가 없는 것이므로 종료
+                    else if (search->keys[i] > b) return;
+                }
+                // scan이 종료되지 않았다면 오른쪽 노드로 이동
+                search = search->children[n_keys];
             }
         }
-        
-        // 만약 탐색 노드의 마지막 원소가 b보다 크거나 같으면
-        // 다음 노드의 원소들은 범위에 해당되지 않으므로 scan 종료
-        if (search->keys[n_keys-1] >= b) break;
-        else search = search->children[n_keys];
+
+        else {
+            // 노드 마지막 원소가 a보다 작을 경우 바로 오른쪽 자식 노드로 이동
+            if (search->keys[n_keys-1] < a){
+                search = search->children[n_keys];
+            }
+
+            else {
+                for (int i = 0; i < n_keys; i++) {
+                    
+                    // 노드 원소가 a보다 큰 경우 왼쪽 자식 노드로 이동
+                    if (search->keys[i] > a) {
+                        search = search->children[i];
+                        break;
+                    }
+                    
+                    // 노드 원소가 a랑 같은 경우 오른쪽 자식 노드로 이동
+                    else if (search->keys[i] == a){
+                        search = search->children[i+1];
+                        break;
+                    }
+                }
+            }
+            
+        }
     }
+    
+
+    // // 최하단 좌측 리프 노드부터 탐색 시작하는 경우
+
+    // // 최하단 맨왼쪽 리프 노드로 이동(트리에서 가장 작은 수)
+    // while (search->children[0] != NULL) {
+    //     search = search->children[0];
+    // }
+    
+    // while (true){
+    //     if (search == NULL) break;
+    //     int n_keys = search->n_keys;
+
+    //     // 만약 탐색 노드의 마지막 원소가 a보다 작다면
+    //     // 모든 원소가 범위에 해당되지 않으므로 다음 노드로 이동
+    //     if (search->keys[n_keys-1] < a) {
+    //         search = search->children[n_keys];
+    //         continue;
+    //     }
+
+    //     for (int i = 0; i < search->n_keys; i++){
+    //         if ((search->keys[i] >= a) && (search->keys[i] <= b)){
+    //             printf("%d  ", search->keys[i]);
+    //         }
+    //     }
+        
+    //     // 만약 탐색 노드의 마지막 원소가 b보다 크거나 같으면
+    //     // 다음 노드의 원소들은 범위에 해당되지 않으므로 scan 종료
+    //     if (search->keys[n_keys-1] >= b) break;
+    //     else search = search->children[n_keys];
+    // }
 }
 
