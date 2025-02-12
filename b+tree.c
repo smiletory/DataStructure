@@ -305,7 +305,6 @@ void scan(int a, int b, struct node* search)
 
             else {
                 for (int i = 0; i < n_keys; i++) {
-                    
                     // 노드 원소가 a보다 큰 경우 왼쪽 자식 노드로 이동
                     if (search->keys[i] > a) {
                         search = search->children[i];
@@ -319,7 +318,6 @@ void scan(int a, int b, struct node* search)
                     }
                 }
             }
-            
         }
     }
     
